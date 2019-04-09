@@ -1,0 +1,58 @@
+1) Add dependency for spring-data-jpa, hikaricp and h2
+2) Create a repository package, interface for repository 
+3) Convert the Items class to an Entity
+7) Create a starter script
+5) Change the getAll method to pull from the database.
+6) Implement in the service class methods for insert/update and delete
+7) Add the button on the page for update
+8) Create update controller
+9) Create update view
+10)Add the delete button
+11) Add the delete controller
+12) Add the add button
+13) Add the controller method for add url
+14) Create a new view addView which is a copy of the edit view as we do not want the itemId column in it. We want it to stay null that way hibernate can generate it using the table id values
+15) Do all this first without enabling the console
+
+spring.jpa.hibernate.ddl-auto=create
+# Show all queries
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+logging.level.org.hibernate.type=trace
+
+Spring Boot 1.x uses the Tomcat JDBC Connection Pool by default.
+In Spring Boot 2, Hikari is the default DataSource implementation.
+
+This is what’s changed from Spring Boot 1.x:
+
+the dependency to Hikari is now automatically included in spring-boot-starter-data-jpa
+the discovery algorithm that automatically determines a DataSource implementation now prefers Hikari over TomcatJDBC (see the reference manual).https://docs.spring.io/spring-boot/docs/2.0.4.RELEASE/reference/htmlsingle/
+
+16) Then next enable the console with the following
+# Enabling H2 Console
+spring.h2.console.enabled=true
+spring.datasource.url=jdbc:h2:file:C:/dev-db
+spring.datasource.driverClassName=org.h2.Driver
+
+17) Then log in the console http://localhost:8080/console-h2 and see your table
+14) Change the database to Oracle, remove h2 settings from application.properties make spring.jpa.hibernate.ddl-auto=none and also from pom
+15) Create the table and add a couple of rows manually using sql developer, remove import.sql
+create table items (
+       item_id number(10,0) generated as identity,
+        item_name varchar2(255 char),
+        item_price double precision not null,
+        item_qty number(10,0) not null,
+        primary key (item_id)
+    )
+insert into items(item_name,item_price,item_qty) values('Weights',9.99,5);
+insert into items(item_name,item_price,item_qty) values('Treadmill',149.99,10);
+commit;
+
+You can set spring.jpa.hibernate.ddl-auto explicitly and the standard Hibernate property values are none, validate, update, create, and create-drop. Spring Boot chooses a default value for you based on whether it thinks your database is embedded. It defaults to create-drop if no schema manager has been detected or none in all other cases. An embedded database is detected by looking at the Connection type. hsqldb, h2, and derby are embedded, and others are not. Be careful when switching from in-memory to a ‘real’ database that you do not make assumptions about the existence of the tables and data in the new platform. You either have to set ddl-auto explicitly or use one of the other mechanisms to initialize the database.
+
+m5: Create a new spring boot project with mongo database as repository against which create crud rest services
+ Then to show how to consume it
+ Go to previous project and create a new controller and a new view, which consumes the getall from the rest service and then shows it on the page
+ Also use the index.html from node to show how to consume it in an html client
+
+ m6:
